@@ -94,3 +94,6 @@ class Mirror(object):
             print("(3/3) Force pushing...")
             cmd = ['-f'] + cmd
             local_repo.git.push(*cmd, kill_after_timeout=self.timeout)
+        print('clean repo %s' % self.src_name)
+        shutil.rmtree(local_repo.working_dir)
+        
