@@ -42,7 +42,11 @@ jobs:
         id: repo
         uses: yi-Xu-0100/repo-list-generator@v1.0.1
         with:
-          my_token: ${{ secrets.GITHUB_TOKEN }}
+          my_token: ${{ secrets.REPO_TOKEN }}
+          # (default)user: ${{ github.repository }}
+          # (default)max_page: 10
+          # (default)block_list:
+          # (default)allow_empty: false
 
       - name: Mirror hub with cache and list
         uses: ./.
