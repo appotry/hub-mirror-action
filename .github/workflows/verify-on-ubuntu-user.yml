@@ -17,7 +17,8 @@ jobs:
         dst: gitee/bloodwolf
         dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
         dst_token:  ${{ secrets.GITEE_TOKEN }}
-        static_list: 'hub-mirror-action,hashes, simple-spring'
+        static_list: '${{ steps.repo.outputs.repoList }}'
+        cache_path: /github/workspace/hub-mirror-cache
         force_update: true
         debug: true
         mappings: 'hashes=>hashes_gitee'
