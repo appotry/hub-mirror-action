@@ -1,0 +1,69 @@
+name: sync2gitee(list)
+# version: 1.0.4
+# author: [yiXu](https://github.com/yi-Xu-0100)
+# guide: [yi-Xu-0100/hub-mirror](https://github.com/yi-Xu-0100/hub-mirror)
+# template: [sync2gitee.list.yml](https://github.com/yi-Xu-0100/hub-mirror/blob/main/template/sync2gitee.list.yml)
+# lastmod: 2021-01-29 23:06:10
+
+on:
+  workflow_dispatch:
+  schedule:
+    # UTC 17:30 -> CST (China) 1:30 see https://datetime360.com/cn/utc-cst-china-time/
+    - cron: '30 17 * * *'
+
+jobs:
+  run:
+    env:
+      dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+      dst_token: ${{ secrets.GITEE_TOKEN }}
+      gitee_user: ${{ secrets.GITEE_USER }}
+    name: Sync GitHub to Gitee(list)
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Get repo and time
+        id: info
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            core.setOutput('time', new Date(Date.now()).toISOString().replace(/[^0-9]/g, ""));
+            core.setOutput('key', `${context.repo.owner}-${context.repo.repo}`);
+
+      - name: Cache src repos
+        uses: actions/cache@v2.1.7
+        id: cache
+        with:
+          path: ${{ github.workspace }}/hub-mirror-cache
+          key: ${{ runner.os }}-${{ steps.info.outputs.key }}-list-cache-${{ steps.info.outputs.time }}
+          restore-keys: ${{ runner.os }}-${{ steps.info.outputs.key }}-list-
+
+      - name: Generate repo list
+        id: repo
+        uses: yi-Xu-0100/repo-list-generator@v1.0.1
+
+      - name: Mirror hub with cache and list
+        uses: ./.
+        with:
+          # 必选，需要同步的 Github 用户（源）
+          src: 'github/${{ github.repository_owner }}'
+          # 必选，需要同步到的 Gitee 用户（目的）
+          dst: 'gitee/${{ secrets.GITEE_USER }}'
+          # 必选，Gitee公钥对应的私钥，https://gitee.com/profile/sshkeys
+          dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+          # 必选，Gitee对应的用于创建仓库的token，https://gitee.com/profile/personal_access_tokens
+          dst_token:  ${{ secrets.GITEE_TOKEN }}
+          # 还有黑、白名单，静态名单机制，可以用于更新某些指定库
+          # static_list: 'repo_name,repo_name2'
+          # black_list: 'repo_name,repo_name2'
+          # white_list: 'repo_name,repo_name2'
+          black_list: '${{ steps.repo.outputs.repo }},cfw-scripts'
+          static_list: '${{ steps.repo.outputs.repoList }}'
+          cache_path: /github/workspace/hub-mirror-cache
+          account_type: user
+          force_update: true
+          timeout: 1h
+
+      - name: Print cache path
+        run: |
+          ls -la ${{ github.workspace }}/hub-mirror-cache
