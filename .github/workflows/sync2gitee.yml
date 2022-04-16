@@ -49,4 +49,5 @@ jobs:
           # static_list: 'repo_name,repo_name2'
           # black_list: 'repo_name,repo_name2'
           # white_list: 'repo_name,repo_name2'
+          black_list: '17lai.site,freenom,go-common-1,hexo,jd_docker,mimotion1,qinglong,server,typecho-theme-handsome,UnicomTask,unlock-music,v2-ui,x,v2rayN,ShadowsocksX-NG,Qv2ray,v2rayL,v2ray-wstls,v2ray-step-by-step,shadowsocksr-libev,shadowsocksr-csharp,openwrt-shadowsocks,lantern,shadowsocks-gui,v2ray-core,shadowsocks-windows,shadowsocks-android,shadowsocks-rss,shadowsocks-iOS,shadowsocks-nodejs,shadowsocks-libev,fhs-install-v2ray,shadowsocks-chromeapp,trojan-go,V2RayW,shadowsocksr-android,shadowsocks-dotcloud,shadowsocks,goagent,shadowsocks-org,shadowsocks-go,shadowsocksr,free'
           
